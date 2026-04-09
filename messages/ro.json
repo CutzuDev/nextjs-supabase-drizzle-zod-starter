@@ -1,0 +1,11 @@
+{
+  "auth": {
+    "login": "Logheaza-te",
+    "logout": "Deloghează-te"
+  },
+  "test": {
+    "test2": {
+      "key": "valoare"
+    }
+  }
+}

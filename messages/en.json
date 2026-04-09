@@ -1,0 +1,11 @@
+{
+  "auth": {
+    "login": "Sign in",
+    "logout": "Sign out"
+  },
+  "test": {
+    "test2": {
+      "key": "value"
+    }
+  }
+}

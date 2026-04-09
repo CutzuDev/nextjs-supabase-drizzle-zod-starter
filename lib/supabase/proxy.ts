@@ -6,8 +6,6 @@ export async function updateSession(request: NextRequest) {
     request,
   });
 
-
-
   // With Fluid compute, don't put this client in a global environment
   // variable. Always create a new one on each request.
   const supabase = createServerClient(
@@ -42,16 +40,24 @@ export async function updateSession(request: NextRequest) {
   const { data } = await supabase.auth.getClaims();
   const user = data?.claims;
 
-  if (
-    request.nextUrl.pathname !== "/" &&
-    !user &&
-    !request.nextUrl.pathname.startsWith("/login") &&
-    !request.nextUrl.pathname.startsWith("/auth")
-  ) {
-    // no user, potentially respond by redirecting the user to the login page
+  const { pathname } = request.nextUrl;
+
+  // Redirect root to default locale
+  if (pathname === "/") {
     const url = request.nextUrl.clone();
-    url.pathname = "/auth/login";
+    url.pathname = "/en";
     return NextResponse.redirect(url);
+  }
+
+  // Extract locale prefix (e.g. /en/about → "en")
+  const locale = pathname.split("/")[1] ?? "en";
+
+  if (!user && !pathname.startsWith(`/${locale}/auth`)) {
+    if (pathname !== `/${locale}`) {
+      const url = request.nextUrl.clone();
+      url.pathname = `/${locale}/auth/login`;
+      return NextResponse.redirect(url);
+    }
   }
 
   // IMPORTANT: You *must* return the supabaseResponse object as it is.
